@@ -12,5 +12,8 @@ export default defineConfig({
     },
     host: true, // often needed with Docker
   },
+  build: {
+    outDir: '../docs',
+  },
 })
 
