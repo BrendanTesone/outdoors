@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+      
+      .attendee-item { 
+        margin: 15px 0; 
+        padding: 15px;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+      }
+      
+      .radio-group { 
+        margin-left: 20px; 
+        margin-top: 10px;
+        display: flex;
+        gap: 20px;
+      }
+      
+      .radio-option {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+      
+      .submit-button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-top: 20px;
+        font-size: 16px;
+        width: 100%;
+      }
+      
+      .submit-button:disabled {
+        background-color: #cccccc;
+        cursor: not-allowed;
+      }
+      
+      #status-message {
+        margin-top: 15px;
+        padding: 12px;
+        border-radius: 4px;
+        display: none;
+      }
+      
+      .attendee-name {
+        font-size: 16px;
+        color: #333;
+      }
+      
+      .attendee-email {
+        color: #666;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <form id="attendeeForm">
+      <? for (let i = 0; i < people.length; i++) { const person = people[i]; ?>
+        <div class="attendee-item">
+          <strong><?= person.name ?></strong> 
+          (<?= person.email ?>)
+          <div class="radio-group">
+            <input type="radio" name="status_<?= i ?>" value="driver|<?= person.name ?>|<?= person.email ?>" id="driver_<?= i ?>">
+            <label for="driver_<?= i ?>">Driver</label>
+            
+            <input type="radio" name="status_<?= i ?>" value="nondriver|<?= person.name ?>|<?= person.email ?>" id="nondriver_<?= i ?>">
+            <label for="nondriver_<?= i ?>">Non-driver</label>
+            
+            <input type="radio" name="status_<?= i ?>" value="not going|<?= person.name ?>|<?= person.email ?>" id="notgoing_<?= i ?>" checked>
+            <label for="notgoing_<?= i ?>">Not Going</label>
+          </div>
+        </div>
+      <? } ?>
+     <div id="status-message"></div>
+
+      <input type="submit" value="Submit" class="submit-button" id="submitButton">
+    </form>
+
+    <script>
+      
+      document.getElementById('attendeeForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevents the form from submitting normally
+        
+        const submitButton = document.getElementById('submitButton');
+        const statusMessage = document.getElementById('status-message');
+
+        submitButton.disabled = true;
+        statusMessage.style.display = 'block';
+        statusMessage.style.backgroundColor = '#fff3cd';
+        statusMessage.textContent = 'Processing...';
+
+        // Collect form data
+        
+        var formDataArray = [];
+        var checkedRadios = document.querySelectorAll('input[type="radio"]:checked');
+        
+        for (var i = 0; i < checkedRadios.length; i++) {
+          var radio = checkedRadios[i];
+          // Retrieve attendee info from the data attributes
+          const [status, name, email] = radio.value.split("|");
+          formDataArray.push({
+            name: name,
+            email: email,
+            status: status
+          });
+        }
+        google.script.run
+        .withSuccessHandler(function(e) {
+          google.script.host.close();
+        })
+        .withFailureHandler(function(error) {
+        console.error('Error:', error);
+        google.script.host.close();
+
+        }).processEboardFormData(formDataArray);
+      });
+
+    </script>
+  </body>
+</html>

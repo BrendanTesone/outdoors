@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <style>
+      /* Modern styling with improved readability */
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+      
+      .attendee-item { 
+        margin: 15px 0; 
+        padding: 15px;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+      }
+      
+      .radio-group { 
+        margin-left: 20px; 
+        margin-top: 10px;
+        display: flex;
+        gap: 20px;
+      }
+      
+      .radio-option {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+      
+      .submit-button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-top: 20px;
+        font-size: 16px;
+        width: 100%;
+      }
+      
+      .submit-button:disabled {
+        background-color: #cccccc;
+        cursor: not-allowed;
+      }
+      
+      #status-message {
+        margin-top: 15px;
+        padding: 12px;
+        border-radius: 4px;
+        display: none;
+      }
+      
+      .attendee-name {
+        font-size: 16px;
+        color: #333;
+      }
+      
+      .attendee-email {
+        color: #666;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Email Draft Assignment</h2>
+    <form id="priorityForm">
+      <? for (var i = 0; i < attendeeData.length; i++) { ?>
+        <div class="attendee-item">
+          <div class="attendee-email"><?= attendeeData[i][0] ?></div>
+          <div class="radio-group">
+            <div class="radio-option">
+              <input type="radio" name="priority_<?= i ?>" value="1|<?= attendeeData[i][0] ?>|<?= attendeeData[i][1] ?>" id="roster_<?= i ?>" 
+                <?= attendeeData[i][1] == "Rostered" ? "checked" : "" ?>>
+              <label for="high_<?= i ?>">On roster (roster/waitlist email)</label>
+            </div>
+            <div class="radio-option">
+              <input type="radio" name="priority_<?= i ?>" value="-1|<?= attendeeData[i][0] ?>|<?= attendeeData[i][1] ?>" id="waitlist_<?= i ?>"
+                <?= attendeeData[i][1] == "Waitlisted" ? "checked" : "" ?>>
+              <label for="low_<?= i ?>">On waitlist (roster/waitlist email)</label>
+            </div>
+            <div class="radio-option">
+              <input type="radio" name="priority_<?= i ?>" value="-2|<?= attendeeData[i][0] ?>|<?= attendeeData[i][1] ?>" id="reject_<?= i ?>"
+                <?= attendeeData[i][1] == "Rejected" ? "checked" : "" ?>>
+              <label for="medium_<?= i ?>">Trip Rejection email</label>
+            </div>
+            <div class="radio-option">
+              <input type="radio" name="priority_<?= i ?>" value="0|<?= attendeeData[i][0] ?>|<?= attendeeData[i][1] ?>" id="dont_<?= i ?>">
+              <label for="medium_<?= i ?>">Dont Send Email</label>
+            </div>
+          </div>
+        </div>
+      <? } ?>
+      <div id="status-message"></div>
+      <input type="submit" value="Create Email Drafts" class="submit-button" id="submitButton">
+    </form>
+
+    <script>
+      document.getElementById('priorityForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevents the form from submitting normally
+        
+        const submitButton = document.getElementById('submitButton');
+        const statusMessage = document.getElementById('status-message');
+
+        submitButton.disabled = true;
+        statusMessage.style.display = 'block';
+        statusMessage.style.backgroundColor = '#fff3cd';
+        statusMessage.textContent = 'Saving settings...';
+
+        // Collect form data
+        var formDataArray = [];
+        var checkedRadios = document.querySelectorAll('input[type="radio"]:checked');
+        
+        for (var i = 0; i < checkedRadios.length; i++) {
+          var radio = checkedRadios[i];
+          // Retrieve attendee info from the data attributes
+          const [priority, email, currentPriority] = radio.value.split("|");
+          formDataArray.push({
+            email: email,
+            priority: parseInt(priority) // Convert to integer
+          });
+        }
+        
+        google.script.run
+          .withSuccessHandler(function(e) {
+            statusMessage.style.backgroundColor = '#d4edda';
+            statusMessage.textContent = 'settings saved successfully!';
+            setTimeout(function() {
+              google.script.host.close();
+            }, 1500);
+          })
+          .withFailureHandler(function(error) {
+            console.error('Error:', error);
+            statusMessage.style.backgroundColor = '#f8d7da';
+            statusMessage.textContent = 'Error saving settings: ' + error;
+            submitButton.disabled = false;
+          })
+          .processDraftUi(formDataArray);
+      });
+    </script>
+  </body>
+</html>

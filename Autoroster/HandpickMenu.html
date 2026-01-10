@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <style>
+      /* Modern styling with improved readability */
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+      
+      .attendee-item { 
+        margin: 15px 0; 
+        padding: 15px;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+      }
+      
+      .radio-group { 
+        margin-left: 20px; 
+        margin-top: 10px;
+        display: flex;
+        gap: 20px;
+      }
+      
+      .radio-option {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+      
+      .submit-button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-top: 20px;
+        font-size: 16px;
+        width: 100%;
+      }
+
+      button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-top: 20px;
+        font-size: 16px;
+        width: 100%;
+      }
+      
+      .submit-button:disabled {
+        background-color: #cccccc;
+        cursor: not-allowed;
+      }
+      
+      #status-message {
+        margin-top: 15px;
+        padding: 12px;
+        border-radius: 4px;
+        display: none;
+      }
+      
+      .attendee-name {
+        font-size: 16px;
+        color: #333;
+      }
+      
+      .attendee-email {
+        color: #666;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <form id="attendeeForm">
+      <? for (var i = 0; i < attendeeData.length; i++) { ?>
+        <div class="attendee-item">
+          <strong><?= attendeeData[i].name ?></strong>
+          (<?= attendeeData[i].email ?> Priority: <?= attendeeData[i].priority ?>)
+          <div class="radio-group">
+            <input type="radio" name="status_<?= i ?>" value="Rostered|<?= attendeeData[i].name ?>|<?= attendeeData[i].email ?>" id="Rostered_<?= i ?>" <?= attendeeData[i].rosterState == "Rostered" ? "checked" : "" ?>>
+            <label for="Rostered_<?= i ?>">Rostered</label>
+           
+            <input type="radio" name="status_<?= i ?>" value="Waitlisted|<?= attendeeData[i].name ?>|<?= attendeeData[i].email ?>" id="Waitlisted_<?= i ?>" <?= attendeeData[i].rosterState == "Waitlisted" ? "checked" : "" ?>>
+            <label for="Waitlisted_<?= i ?>">Waitlisted</label>
+           
+            <input type="radio" name="status_<?= i ?>" value="Rejected|<?= attendeeData[i].name ?>|<?= attendeeData[i].email ?>" id="Rejected_<?= i ?>" <?= attendeeData[i].rosterState == "Rejected" ? "checked" : "" ?>>
+            <label for="Rejected_<?= i ?>">Rejected</label>
+          </div>
+        </div>
+      <? } ?>
+     <div id="status-message"></div>
+      
+      <button type="button" id="checkSubmittable">Check # Waitlisted and Rostered</button>
+      <input type="submit" value="Submit if numbers are correct." class="submit-button" id="submitButton">
+    </form>
+
+    <script>
+        const submitButton = document.getElementById('submitButton');
+        submitButton.disabled = true;
+      // Function to initialize the form with attendee data
+      function initialize() {
+        google.script.run
+          .withSuccessHandler(function(attendeeData) {
+            if (!attendeeData || attendeeData.length === 0) {
+              document.getElementById('loading').innerHTML = 'No attendee data found.';
+              return;
+            }
+            
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('attendeeForm').style.display = 'block';
+          })
+          .withFailureHandler(function(error) {
+            document.getElementById('loading').innerHTML = 'Error loading attendee data: ' + error;
+          });
+      }
+
+      function useData(numRostered, numWaitlist){
+        submitButton.disabled = false;
+        var checkedRadios = document.querySelectorAll('input[type="radio"]:checked');
+        let rosteredCount = 0;
+        let waitlistCount = 0;
+        
+        for (var i = 0; i < checkedRadios.length; i++) {
+          var radio = checkedRadios[i];
+          const [status, name, email] = radio.value.split("|");
+            switch(status){
+                case "Rostered":
+                    rosteredCount++;
+                    break;
+                case "Waitlisted":
+                    waitlistCount++;
+                    break;
+                case "Rejected":
+                    break;
+            }
+        }
+        
+        let waitlistMessage;
+        if(waitlistCount < numWaitlist){
+            waitlistMessage = "Need " + (numWaitlist-waitlistCount) + " more people on waitlist. ";
+        }
+        else if(waitlistCount > numWaitlist){
+            waitlistMessage = "Need " + (waitlistCount-numWaitlist) + " less people on waitlist. ";
+        }else{
+          waitlistMessage = "Amount of waitlisted people is good. "
+        }
+
+        let rosteredMessage;
+        if(rosteredCount < numRostered){
+            rosteredMessage = "Need " + (numRostered-rosteredCount) + " more people on roster. ";
+        }
+        else if(rosteredCount > numRostered){
+            rosteredMessage = "Need " + (rosteredCount-numRostered) + " less people on roster. ";
+        }else{
+          rosteredMessage = "Amount of rostered people is good. "
+        }
+        
+        if((rosteredCount != numRostered || waitlistCount != numWaitlist)){
+            const statusMessage = document.getElementById('status-message');
+            statusMessage.style.display = 'block';
+            statusMessage.style.backgroundColor = '#ff6666';
+            statusMessage.textContent = rosteredMessage + waitlistMessage + "If the number of people currently selected is what you want, then click submit.";
+        }else{
+            const statusMessage = document.getElementById('status-message');
+            statusMessage.style.display = 'block';
+            statusMessage.style.backgroundColor = '#008000';
+            statusMessage.textContent = "Ready To Submit!";
+        }
+      }
+
+
+    document.getElementById('checkSubmittable').addEventListener('click', function() {
+                  // Work with the data directly here
+        let numRostered = <?= numRostered ?>;
+        let numWaitlist = <?= numWaitlist ?>;
+            
+            // Do whatever you need with these values
+            // For example, show the modal with the data
+        useData(numRostered, numWaitlist);
+
+    });
+    document.getElementById('attendeeForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevents the form from submitting normally
+        
+        const statusMessage = document.getElementById('status-message');
+
+        submitButton.disabled = true;
+        statusMessage.style.display = 'block';
+        statusMessage.style.backgroundColor = '#fff3cd';
+        statusMessage.textContent = 'Processing...';
+
+        // Collect form data
+        
+        var formDataArray = [];
+        var checkedRadios = document.querySelectorAll('input[type="radio"]:checked');
+        
+        //console.log("checkedRadios");
+        //console.log(checkedRadios);
+        for (var i = 0; i < checkedRadios.length; i++) {
+          var radio = checkedRadios[i];
+          // Retrieve attendee info from the data attributes
+          const [status, name, email] = radio.value.split("|");
+          //console.log("name: "+name)
+          formDataArray.push({
+            name: name,
+            email: email,
+            status: status
+          });
+          //console.log("formdataarray");
+          //console.log(formDataArray);
+        }
+        google.script.run
+        .withSuccessHandler(function(e) {
+          google.script.host.close();
+        })
+        .withFailureHandler(function(error) {
+        console.error('Error:', error);
+        google.script.host.close();
+
+        }).processRosterAllHandpick(formDataArray);
+      });
+
+
+    
+
+      // Initialize the form when the page loads
+      window.addEventListener('load', initialize);
+    </script>
+  </body>
+</html>

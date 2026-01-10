@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <script>
+    function createForm() {
+        return `
+            <form id="dynamicForm">
+                <div id="questionsContainer"></div>
+                <button id="submitButton" type="button" onclick="submitForm()">Submit</button>
+            </form>
+        `;
+    }
+
+    function getNextTuesdayAt10AM() {
+        const now = new Date();
+        const dayOfWeek = now.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+
+        const daysUntilTuesday = (dayOfWeek <= 2) ? (2 - dayOfWeek) : (9 - dayOfWeek); // Days to next Tuesday
+        const nextTuesday = new Date(now);
+        
+        nextTuesday.setDate(now.getDate() + daysUntilTuesday); // Move to next Tuesday
+        nextTuesday.setHours(10, 0, 0, 0); // Set time to 10:00 AM
+
+        return nextTuesday;
+    }
+
+    function addDateTimeQuestion(label, objectName, defaultValue = new Date()) {
+        const container = document.getElementById("questionsContainer");
+        if (!container) {
+            console.error("Form container not found.");
+            return;
+        }
+
+        const questionId = objectName.replace(/\s+/g, "_").toLowerCase(); // Unique ID for the object
+
+        // Format the date for datetime-local input in local time (Eastern Time)
+        const formattedDefault = defaultValue instanceof Date 
+            ? formatLocalDateTime(defaultValue)
+            : "";
+
+        container.innerHTML += `
+            <label for="${questionId}">${label}</label>
+            <input type="datetime-local" id="${questionId}" name="${questionId}" value="${formattedDefault}">
+            <br>
+        `;
+    }
+
+    // Helper function to format date to local time string
+    function formatLocalDateTime(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        
+        return `${year}-${month}-${day}T${hours}:${minutes}`;
+    }
+
+    function addQuestion(label, objectName, defaultValue = "") {
+        const container = document.getElementById("questionsContainer");
+        if (!container) {
+            console.error("Form container not found.");
+            return;
+        }
+
+        const questionId = objectName.replace(/\s+/g, "_").toLowerCase(); // Unique ID for the object
+        container.innerHTML += `
+            <label for="${questionId}">${label}</label>
+            <input type="text" id="${questionId}" name="${questionId}" value="${defaultValue}">
+            <br>
+        `;
+    }
+
+    function getNextSaturdayAt11AM() {
+        const now = new Date();
+        const dayOfWeek = now.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+
+        const daysUntilSaturday = (dayOfWeek <= 6) ? (6 - dayOfWeek) : 7; // Days to next Saturday
+        const nextSaturday = new Date(now);
+        
+        nextSaturday.setDate(now.getDate() + daysUntilSaturday); // Move to next Saturday
+        nextSaturday.setHours(11, 0, 0, 0); // Set time to 11:00 AM
+
+        return nextSaturday;
+    }
+
+    function submitForm() {
+        const submitButton = document.getElementById("submitButton"); // Assuming the button has an ID
+        submitButton.disabled = true; // Disable butto
+
+        const formElements = document.querySelectorAll("#questionsContainer input");
+        const formData = {};
+
+        formElements.forEach(input => {
+            formData[input.name] = input.value;
+        });
+
+        google.script.run.withSuccessHandler(response => {
+                    
+        }).processAutoFormData(formData);
+    }
+
+    window.onload = function () {
+        document.body.innerHTML = createForm();
+        addQuestion("What is the title? (_____________ + Commitment Form)", "title");
+        addDateTimeQuestion("What is the date and meeting time of the event?", "date", getNextSaturdayAt11AM());
+        addDateTimeQuestion("When to close form?", "close_date", getNextTuesdayAt10AM());
+        addQuestion("Where are we meeting? Meeting place: ___________", "meeting_place", "Mohawk Parking Lot");
+        addQuestion("When are we returning? Return time: ________", "return_time");
+    };
+  </script>
+</head>
+<body>
+</body>
+</html>
