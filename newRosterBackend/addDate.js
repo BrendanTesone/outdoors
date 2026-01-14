@@ -9,13 +9,14 @@ function saveFormCloseDateSettings(payload) {
     const rawData = props.getProperty('FORM_DATES_LIST') || '[]';
     let formDates = JSON.parse(rawData);
 
+    const targetLink = (payload.formLink || '').trim();
     const newEntry = {
-        formLink: payload.formLink,
+        formLink: targetLink,
         closeDate: payload.date
     };
 
     // Check if we already have an entry for this form to update it, otherwise append
-    const existingIndex = formDates.findIndex(item => item.formLink === payload.formLink);
+    const existingIndex = formDates.findIndex(item => (item.formLink || '').trim() === targetLink);
     if (existingIndex > -1) {
         formDates[existingIndex] = newEntry;
     } else {
@@ -78,4 +79,25 @@ function closeForms() {
     if (remainingDates.length !== initialCount) {
         props.setProperty('FORM_DATES_LIST', JSON.stringify(remainingDates));
     }
+}
+/**
+ * API Function: Removes a form link from the registry.
+ */
+function deleteFormDateRegistry(payload) {
+    const props = PropertiesService.getScriptProperties();
+    const rawData = props.getProperty('FORM_DATES_LIST') || '[]';
+    let formDates = JSON.parse(rawData);
+
+    const target = (payload.formLink || '').trim();
+    const initialCount = formDates.length;
+
+    // Filter out the specific link
+    const remaining = formDates.filter(item => (item.formLink || '').trim() !== target);
+
+    if (remaining.length !== initialCount) {
+        props.setProperty('FORM_DATES_LIST', JSON.stringify(remaining));
+        return { success: true, message: 'Schedule removed.' };
+    }
+
+    return { success: false, error: 'Link not found in registry.' };
 }

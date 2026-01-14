@@ -144,6 +144,7 @@ function getTimeframeStatus(now, props) {
 /**
  * Helper: Extracts email address from name string.
  */
+
 function formatEmail(input) {
     const match = String(input).match(/<(.+?)>/);
     return match ? match[1] : String(input).trim();

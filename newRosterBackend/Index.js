@@ -18,11 +18,31 @@ function doPost(e) {
                 const allProps = PropertiesService.getScriptProperties().getProperties();
                 return outputJsonResponse({ success: true, props: allProps });
             case 'deleteFormDate':
-                const scriptProps = PropertiesService.getScriptProperties();
-                let list = JSON.parse(scriptProps.getProperty('FORM_DATES_LIST') || '[]');
-                list = list.filter(item => item.formLink !== contents.formLink);
-                scriptProps.setProperty('FORM_DATES_LIST', JSON.stringify(list));
-                return outputJsonResponse({ success: true, message: 'Removed from schedule.' });
+                return outputJsonResponse(deleteFormDateRegistry(contents));
+            case 'getPriorityData':
+                return outputJsonResponse(getPriorityData());
+            case 'adjustPriority':
+                return outputJsonResponse(adjustPriority(contents));
+            case 'getCommitmentData':
+                return outputJsonResponse(getCommitmentDataFromLink(contents));
+            case 'getRosterData':
+                return outputJsonResponse(getRosterDataFromLink(contents));
+            case 'createRosterFromTemplate':
+                return outputJsonResponse(createRosterFromTemplate(contents));
+            case 'getEboardData':
+                return outputJsonResponse(getEboardData());
+            case 'clearRoster':
+                return outputJsonResponse(clearRoster(contents));
+            case 'addPeople':
+                return outputJsonResponse(addPeople(contents));
+            case 'getRosterLinks':
+                return outputJsonResponse(getRosterLinks());
+            case 'saveRosterLinks':
+                return outputJsonResponse(saveRosterLinks(contents));
+            case 'createEmailDraft':
+                return outputJsonResponse(createEmailDraft(contents));
+            case 'batchAdjustPriority':
+                return outputJsonResponse(batchAdjustPriority(contents));
             default:
                 return outputJsonResponse({ error: 'Action not found' });
         }
