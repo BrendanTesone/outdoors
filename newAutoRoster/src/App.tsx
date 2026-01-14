@@ -1,7 +1,19 @@
-import { useState, useMemo } from 'react'
+import { useMemo } from 'react'
 import { HashRouter as Router, Routes, Route, Link, useLocation, Navigate } from 'react-router-dom'
-import { Tabs, Tab, Box, Container, AppBar, Toolbar, Typography, CssBaseline, ThemeProvider, createTheme, Menu, MenuItem } from '@mui/material'
+import {
+  Box, Container, Typography, CssBaseline, ThemeProvider, createTheme,
+  Drawer, ListItemButton, ListItemIcon, ListItemText, ListSubheader, Divider
+} from '@mui/material'
 import SettingsIcon from '@mui/icons-material/Settings';
+import QrCodeIcon from '@mui/icons-material/QrCode';
+import DescriptionIcon from '@mui/icons-material/Description';
+import EventIcon from '@mui/icons-material/Event';
+import GroupIcon from '@mui/icons-material/Group';
+import MailIcon from '@mui/icons-material/Mail';
+import StarIcon from '@mui/icons-material/Star';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import SendIcon from '@mui/icons-material/Send';
+
 import QRGenerator from './components/QRGenerator'
 import AddCloseDate from './components/AddCloseDate'
 import AutoEmailSettings from './components/AutoEmailSettings'
@@ -11,143 +23,116 @@ import PriorityManager from './components/PriorityManager'
 import AutoRoster from './components/AutoRoster'
 import DraftTripEmail from './components/DraftTripEmail'
 import SetRosterPriority from './components/SetRosterPriority'
+import outdoorsLogo from './assets/Outdoors Tree Logo.png'
 import './App.css'
 
+const DRAWER_WIDTH = 280;
+
 function AppContent() {
-  const location = useLocation()
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const location = useLocation();
 
-  const handleOpenMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
+  const MenuItem = ({ to, icon, label }: { to: string, icon: React.ReactNode, label: string }) => {
+    const active = location.pathname === to;
+    return (
+      <ListItemButton
+        component={Link}
+        to={to}
+        sx={{
+          my: 0.5,
+          mx: 1,
+          borderRadius: 2,
+          bgcolor: active ? 'rgba(0, 90, 67, 0.08)' : 'transparent',
+          color: active ? 'primary.main' : 'text.primary',
+          '&:hover': {
+            bgcolor: active ? 'rgba(0, 90, 67, 0.08)' : 'rgba(0,0,0,0.04)'
+          },
+          '& .MuiListItemIcon-root': {
+            color: active ? 'primary.main' : 'text.secondary'
+          }
+        }}
+        selected={active}
+      >
+        <ListItemIcon>{icon}</ListItemIcon>
+        <ListItemText primary={label} primaryTypographyProps={{ fontWeight: active ? 700 : 500, fontSize: '0.9rem' }} />
+      </ListItemButton>
+    );
   };
-  const handleCloseMenu = () => {
-    setAnchorEl(null);
-  };
-
-  // Determine if we are in a sub-route of Rostering
-  const isRostering = ['/auto-roster', '/draft-email', '/set-priority'].includes(location.pathname);
-
-  // Use the current path as the tab value, or the group parent if active
-  const tabValue = isRostering ? '/rostering' : (location.pathname === '/' ? '/qr' : location.pathname);
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', bgcolor: '#f8faf9' }}>
-      <AppBar position="fixed" color="default" sx={{ bgcolor: 'white', borderBottom: '1px solid #e0e6e4', boxShadow: 'none' }}>
-        <Container maxWidth={false}>
-          <Toolbar disableGutters sx={{ gap: 2 }}>
-            <Typography variant="h5" sx={{
-              fontWeight: 800,
-              color: 'primary.main',
-              cursor: 'default',
-              letterSpacing: '-0.02em',
-              whiteSpace: 'nowrap',
-              flexShrink: 0
-            }}>
-              Eboard Tools
-            </Typography>
-            <Tabs
-              value={tabValue}
-              indicatorColor="primary"
-              textColor="primary"
-              variant="scrollable"
-              scrollButtons="auto"
-              sx={{
-                '& .MuiTab-root': {
-                  fontSize: '0.85rem',
-                  minWidth: 80,
-                  px: 1,
-                  transition: 'all 0.2s',
-                  '&:hover': {
-                    color: 'primary.light',
-                    opacity: 0.8,
-                  },
-                },
-              }}
-            >
-              <Tab
-                value="/qr"
-                label="QR Generator"
-                component={Link}
-                to="/qr"
-                sx={{ textTransform: 'none', fontWeight: 600 }}
-              />
-              <Tab
-                value="/auto-form"
-                label="Commitment Form Generator"
-                component={Link}
-                to="/auto-form"
-                sx={{ textTransform: 'none', fontWeight: 600 }}
-              />
-              <Tab
-                value="/add-date"
-                label="Schedule Form Close Date"
-                component={Link}
-                to="/add-date"
-                sx={{ textTransform: 'none', fontWeight: 600 }}
-              />
-              <Tab
-                value="/auto-email"
-                label="Email Slideshow Bot"
-                component={Link}
-                to="/auto-email"
-                sx={{ textTransform: 'none', fontWeight: 600 }}
-              />
-              <Tab
-                value="/priority"
-                label="Priority Manager"
-                component={Link}
-                to="/priority"
-                sx={{ textTransform: 'none', fontWeight: 600 }}
-              />
-              <Tab
-                value="/rostering"
-                label="Rostering"
-                onMouseEnter={handleOpenMenu}
-                aria-owns={anchorEl ? 'rostering-menu' : undefined}
-                aria-haspopup="true"
-                sx={{ textTransform: 'none', fontWeight: 600 }}
-              />
-              <Tab
-                value="/config"
-                icon={<SettingsIcon sx={{ fontSize: '1.2rem' }} />}
-                component={Link}
-                to="/config"
-                sx={{
-                  minWidth: 'auto !important',
-                  px: 2,
-                  '&.Mui-selected': { color: 'primary.main' }
-                }}
-              />
-            </Tabs>
-            <Menu
-              id="rostering-menu"
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={handleCloseMenu}
-              MenuListProps={{ onMouseLeave: handleCloseMenu }}
-            >
-              <MenuItem component={Link} to="/auto-roster" onClick={handleCloseMenu}>Auto Roster</MenuItem>
-              <MenuItem component={Link} to="/draft-email" onClick={handleCloseMenu}>Draft Emails</MenuItem>
-              <MenuItem component={Link} to="/set-priority" onClick={handleCloseMenu}>Set Trip Priority</MenuItem>
-            </Menu>
-          </Toolbar>
+    <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: '#f8faf9' }}>
+
+      {/* Top Bar */}
+
+
+      {/* Sidebar */}
+      <Drawer
+        variant="permanent"
+        sx={{
+          width: DRAWER_WIDTH,
+          flexShrink: 0,
+          [`& .MuiDrawer-paper`]: { width: DRAWER_WIDTH, boxSizing: 'border-box', borderRight: '1px solid #e0e6e4', bgcolor: '#ffffff' },
+        }}
+      >
+        <Box sx={{ p: 1.5, borderBottom: '1px solid #e0e6e4', display: 'flex', alignItems: 'center', gap: 1.5 }}>
+          <img src={outdoorsLogo} alt="Logo" style={{ height: 60, width: 'auto' }} />
+          <Typography variant="h6" sx={{ fontWeight: 800, color: 'primary.main', fontSize: '1.2rem', whiteSpace: 'nowrap' }}>
+            Eboard Tools
+          </Typography>
+        </Box>
+        <Box sx={{ overflow: 'auto', py: 2 }}>
+
+          <ListSubheader disableSticky sx={{ fontWeight: 800, textTransform: 'uppercase', fontSize: '0.75rem', color: 'text.secondary', lineHeight: '2em' }}>
+            Phase 1: Trip Prep
+          </ListSubheader>
+          <MenuItem to="/qr" icon={<QrCodeIcon />} label="QR Generator" />
+          <MenuItem to="/auto-form" icon={<DescriptionIcon />} label="Commitment Form" />
+          <MenuItem to="/add-date" icon={<EventIcon />} label="Set Close Date" />
+
+          <Divider sx={{ my: 2, mx: 2 }} />
+
+          <ListSubheader sx={{ fontWeight: 800, textTransform: 'uppercase', fontSize: '0.75rem', color: 'text.secondary', lineHeight: '2em' }}>
+            Phase 2: Roster Management
+          </ListSubheader>
+          <MenuItem to="/auto-roster" icon={<GroupIcon />} label="Auto Roster" />
+          <MenuItem to="/set-priority" icon={<TrendingUpIcon />} label="Set Trip Priority" />
+
+          <Divider sx={{ my: 2, mx: 2 }} />
+
+          <ListSubheader sx={{ fontWeight: 800, textTransform: 'uppercase', fontSize: '0.75rem', color: 'text.secondary', lineHeight: '2em' }}>
+            Phase 3: Communication
+          </ListSubheader>
+          <MenuItem to="/draft-email" icon={<MailIcon />} label="Draft Trip Emails" />
+          <MenuItem to="/auto-email" icon={<SendIcon />} label="Email Slideshow Bot" />
+
+          <Divider sx={{ my: 2, mx: 2 }} />
+
+          <ListSubheader sx={{ fontWeight: 800, textTransform: 'uppercase', fontSize: '0.75rem', color: 'text.secondary', lineHeight: '2em' }}>
+            Admin & Database
+          </ListSubheader>
+          <MenuItem to="/priority" icon={<StarIcon />} label="Priority Database" />
+          <MenuItem to="/config" icon={<SettingsIcon />} label="Global Config" />
+
+        </Box>
+      </Drawer>
+
+      {/* Main Content */}
+      <Box component="main" sx={{ flexGrow: 1, p: 4, width: { sm: `calc(100% - ${DRAWER_WIDTH}px)` } }}>
+
+        <Container maxWidth="lg">
+          <Routes>
+            <Route path="/" element={<Navigate to="/qr" replace />} />
+            <Route path="/qr" element={<QRGenerator />} />
+            <Route path="/auto-form" element={<AutoFormGenerator />} />
+            <Route path="/add-date" element={<AddCloseDate />} />
+            <Route path="/auto-email" element={<AutoEmailSettings />} />
+            <Route path="/priority" element={<PriorityManager />} />
+            <Route path="/config" element={<ToolsConfig />} />
+            <Route path="/auto-roster" element={<AutoRoster />} />
+            <Route path="/draft-email" element={<DraftTripEmail />} />
+            <Route path="/set-priority" element={<SetRosterPriority />} />
+          </Routes>
         </Container>
-      </AppBar>
-      <Toolbar /> {/* Spacer for fixed AppBar */}
-      <Container maxWidth="lg" sx={{ mt: 6, mb: 6, flexGrow: 1 }}>
-        <Routes>
-          <Route path="/" element={<Navigate to="/qr" replace />} />
-          <Route path="/qr" element={<QRGenerator />} />
-          <Route path="/auto-form" element={<AutoFormGenerator />} />
-          <Route path="/add-date" element={<AddCloseDate />} />
-          <Route path="/auto-email" element={<AutoEmailSettings />} />
-          <Route path="/priority" element={<PriorityManager />} />
-          <Route path="/config" element={<ToolsConfig />} />
-          <Route path="/auto-roster" element={<AutoRoster />} />
-          <Route path="/draft-email" element={<DraftTripEmail />} />
-          <Route path="/set-priority" element={<SetRosterPriority />} />
-        </Routes>
-      </Container>
+      </Box>
     </Box>
   )
 }
