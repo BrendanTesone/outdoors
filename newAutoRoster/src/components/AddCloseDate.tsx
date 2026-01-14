@@ -16,7 +16,8 @@ const AddCloseDate = () => {
 
     const [formLink, setFormLink] = useState('');
     const [selectedDate, setSelectedDate] = useState<Dayjs | null>(getNextTuesdayAt10AM());
-    const [loading, setLoading] = useState(false);
+    const [isAdding, setIsAdding] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
     const [status, setStatus] = useState<{ type: 'success' | 'error', message: string } | null>(null);
     const [activeDates, setActiveDates] = useState<any[]>([]);
 
@@ -31,8 +32,9 @@ const AddCloseDate = () => {
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             });
             const result = await response.json();
-            if (result.success && result.props.FORM_DATES_LIST) {
-                setActiveDates(JSON.parse(result.props.FORM_DATES_LIST));
+            if (result.success) {
+                const list = result.props.FORM_DATES_LIST ? JSON.parse(result.props.FORM_DATES_LIST) : [];
+                setActiveDates(list);
             }
         } catch (e) {
             console.error('Failed to fetch active dates', e);
@@ -43,20 +45,30 @@ const AddCloseDate = () => {
         fetchActiveDates();
     }, []);
 
-    const handleDelete = async (formLink: string) => {
+    const handleDelete = async (targetLink: string) => {
         if (!APPS_SCRIPT_URL) return;
-        setLoading(true);
+        setIsDeleting(true);
+        setStatus(null);
+        console.log('Attempting to delete schedule for:', targetLink);
         try {
-            await fetch(APPS_SCRIPT_URL, {
+            const response = await fetch(APPS_SCRIPT_URL, {
                 method: 'POST',
-                body: JSON.stringify({ action: 'deleteFormDate', formLink }),
+                body: JSON.stringify({ action: 'deleteFormDate', formLink: targetLink }),
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             });
-            fetchActiveDates();
+            const result = await response.json();
+            console.log('Delete Result:', result);
+            if (result.success) {
+                setStatus({ type: 'success', message: 'Schedule removed successfully.' });
+                await fetchActiveDates();
+            } else {
+                setStatus({ type: 'error', message: 'Delete Error: ' + (result.error || 'Unknown error') });
+            }
         } catch (e) {
             console.error('Failed to delete date', e);
+            setStatus({ type: 'error', message: 'Connection Error: Failed to reach backend.' });
         } finally {
-            setLoading(false);
+            setIsDeleting(false);
         }
     };
 
@@ -66,7 +78,7 @@ const AddCloseDate = () => {
             return;
         }
 
-        setLoading(true);
+        setIsAdding(true);
         setStatus(null);
 
         const payload = {
@@ -98,7 +110,7 @@ const AddCloseDate = () => {
         } catch (error) {
             setStatus({ type: 'error', message: 'Connection Failed: Check Web App deployment.' });
         } finally {
-            setLoading(false);
+            setIsAdding(false);
         }
     };
 
@@ -138,11 +150,11 @@ const AddCloseDate = () => {
                         variant="contained"
                         size="large"
                         onClick={handleSave}
-                        disabled={loading}
-                        startIcon={loading && <CircularProgress size={20} color="inherit" />}
+                        disabled={isAdding || isDeleting}
+                        startIcon={isAdding && <CircularProgress size={20} color="inherit" />}
                         sx={{ py: 1.5, borderRadius: 2, textTransform: 'none', fontWeight: 600 }}
                     >
-                        {loading ? 'Adding Date...' : 'Add Close Date to Form'}
+                        {isAdding ? 'Adding Date...' : isDeleting ? 'Deleting...' : 'Add Close Date to Form'}
                     </Button>
                 </Paper>
 
@@ -163,7 +175,7 @@ const AddCloseDate = () => {
                                             <Button variant="outlined" size="small" onClick={() => window.open(item.formLink, '_blank')}>
                                                 Open
                                             </Button>
-                                            <IconButton edge="end" aria-label="delete" onClick={() => handleDelete(item.formLink)} disabled={loading}>
+                                            <IconButton edge="end" aria-label="delete" onClick={() => handleDelete(item.formLink)} disabled={isAdding || isDeleting}>
                                                 <DeleteIcon color="error" />
                                             </IconButton>
                                         </Stack>

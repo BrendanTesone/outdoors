@@ -83,7 +83,7 @@ const AutoEmailSettings = () => {
             </Typography>
 
             <Paper elevation={3} sx={{ p: 4, width: '100%', maxWidth: 500, borderRadius: 3 }}>
-                {currentLink && (
+                {currentLink ? (
                     <Box sx={{ mb: 4, p: 2, bgcolor: '#f0f4f2', borderRadius: 2, border: '1px solid #d0e0d8' }}>
                         <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 700, textTransform: 'uppercase' }}>
                             Current Slideshow Link:
@@ -92,6 +92,10 @@ const AutoEmailSettings = () => {
                             {currentLink}
                         </Typography>
                     </Box>
+                ) : (
+                    <Alert severity="warning" sx={{ mb: 4, borderRadius: 2 }}>
+                        No slideshow link has been set yet for this week.
+                    </Alert>
                 )}
 
                 <TextField

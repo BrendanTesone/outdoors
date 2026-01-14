@@ -1,37 +1,61 @@
-import { useMemo } from 'react'
+import { useState, useMemo } from 'react'
 import { HashRouter as Router, Routes, Route, Link, useLocation, Navigate } from 'react-router-dom'
-import { Tabs, Tab, Box, Container, AppBar, Toolbar, Typography, CssBaseline, ThemeProvider, createTheme } from '@mui/material'
+import { Tabs, Tab, Box, Container, AppBar, Toolbar, Typography, CssBaseline, ThemeProvider, createTheme, Menu, MenuItem } from '@mui/material'
+import SettingsIcon from '@mui/icons-material/Settings';
 import QRGenerator from './components/QRGenerator'
 import AddCloseDate from './components/AddCloseDate'
 import AutoEmailSettings from './components/AutoEmailSettings'
 import AutoFormGenerator from './components/AutoFormGenerator'
 import ToolsConfig from './components/ToolsConfig'
+import PriorityManager from './components/PriorityManager'
+import AutoRoster from './components/AutoRoster'
+import DraftTripEmail from './components/DraftTripEmail'
+import SetRosterPriority from './components/SetRosterPriority'
 import './App.css'
 
 function AppContent() {
   const location = useLocation()
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
-  // Use the current path as the tab value. 
-  const currentPath = location.pathname === '/' ? '/qr' : location.pathname
+  const handleOpenMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+  };
+
+  // Determine if we are in a sub-route of Rostering
+  const isRostering = ['/auto-roster', '/draft-email', '/set-priority'].includes(location.pathname);
+
+  // Use the current path as the tab value, or the group parent if active
+  const tabValue = isRostering ? '/rostering' : (location.pathname === '/' ? '/qr' : location.pathname);
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', bgcolor: '#f8faf9' }}>
       <AppBar position="fixed" color="default" sx={{ bgcolor: 'white', borderBottom: '1px solid #e0e6e4', boxShadow: 'none' }}>
-        <Container maxWidth="lg">
-          <Toolbar disableGutters>
-            <Typography variant="h5" sx={{ mr: 4, fontWeight: 800, color: 'primary.main', cursor: 'default', letterSpacing: '-0.02em' }}>
+        <Container maxWidth={false}>
+          <Toolbar disableGutters sx={{ gap: 2 }}>
+            <Typography variant="h5" sx={{
+              fontWeight: 800,
+              color: 'primary.main',
+              cursor: 'default',
+              letterSpacing: '-0.02em',
+              whiteSpace: 'nowrap',
+              flexShrink: 0
+            }}>
               Eboard Tools
             </Typography>
             <Tabs
-              value={currentPath}
+              value={tabValue}
               indicatorColor="primary"
               textColor="primary"
               variant="scrollable"
               scrollButtons="auto"
               sx={{
                 '& .MuiTab-root': {
-                  fontSize: '0.95rem',
-                  minWidth: 100,
+                  fontSize: '0.85rem',
+                  minWidth: 80,
+                  px: 1,
                   transition: 'all 0.2s',
                   '&:hover': {
                     color: 'primary.light',
@@ -63,19 +87,49 @@ function AppContent() {
               />
               <Tab
                 value="/auto-email"
-                label="Auto-Reply Slideshow Bot"
+                label="Email Slideshow Bot"
                 component={Link}
                 to="/auto-email"
                 sx={{ textTransform: 'none', fontWeight: 600 }}
               />
               <Tab
-                value="/config"
-                label="Tools Config"
+                value="/priority"
+                label="Priority Manager"
                 component={Link}
-                to="/config"
+                to="/priority"
                 sx={{ textTransform: 'none', fontWeight: 600 }}
               />
+              <Tab
+                value="/rostering"
+                label="Rostering"
+                onMouseEnter={handleOpenMenu}
+                aria-owns={anchorEl ? 'rostering-menu' : undefined}
+                aria-haspopup="true"
+                sx={{ textTransform: 'none', fontWeight: 600 }}
+              />
+              <Tab
+                value="/config"
+                icon={<SettingsIcon sx={{ fontSize: '1.2rem' }} />}
+                component={Link}
+                to="/config"
+                sx={{
+                  minWidth: 'auto !important',
+                  px: 2,
+                  '&.Mui-selected': { color: 'primary.main' }
+                }}
+              />
             </Tabs>
+            <Menu
+              id="rostering-menu"
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleCloseMenu}
+              MenuListProps={{ onMouseLeave: handleCloseMenu }}
+            >
+              <MenuItem component={Link} to="/auto-roster" onClick={handleCloseMenu}>Auto Roster</MenuItem>
+              <MenuItem component={Link} to="/draft-email" onClick={handleCloseMenu}>Draft Emails</MenuItem>
+              <MenuItem component={Link} to="/set-priority" onClick={handleCloseMenu}>Set Trip Priority</MenuItem>
+            </Menu>
           </Toolbar>
         </Container>
       </AppBar>
@@ -87,7 +141,11 @@ function AppContent() {
           <Route path="/auto-form" element={<AutoFormGenerator />} />
           <Route path="/add-date" element={<AddCloseDate />} />
           <Route path="/auto-email" element={<AutoEmailSettings />} />
+          <Route path="/priority" element={<PriorityManager />} />
           <Route path="/config" element={<ToolsConfig />} />
+          <Route path="/auto-roster" element={<AutoRoster />} />
+          <Route path="/draft-email" element={<DraftTripEmail />} />
+          <Route path="/set-priority" element={<SetRosterPriority />} />
         </Routes>
       </Container>
     </Box>
@@ -161,5 +219,3 @@ function App() {
 }
 
 export default App
-
-
