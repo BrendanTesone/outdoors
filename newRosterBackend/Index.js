@@ -11,6 +11,8 @@ function doPost(e) {
                 return outputJsonResponse(updateAutoEmailSettings(contents));
             case 'createCommitmentForm':
                 return outputJsonResponse(createCommitmentForm(contents));
+            case 'generateItinerary':
+                return outputJsonResponse(generateItinerary(contents));
             case 'saveConfig':
                 PropertiesService.getScriptProperties().setProperty(contents.key, contents.value);
                 return outputJsonResponse({ success: true, message: 'Property ' + contents.key + ' updated!' });
@@ -43,6 +45,14 @@ function doPost(e) {
                 return outputJsonResponse(createEmailDraft(contents));
             case 'batchAdjustPriority':
                 return outputJsonResponse(batchAdjustPriority(contents));
+            case 'testResolveLocation':
+                return outputJsonResponse(testResolveLocation(contents));
+            case 'testExtractStops':
+                return outputJsonResponse(testExtractStops(contents));
+            case 'testRouteMap':
+                return outputJsonResponse(testRouteMap(contents));
+            case 'testAmenities':
+                return outputJsonResponse(testAmenities(contents));
             default:
                 return outputJsonResponse({ error: 'Action not found' });
         }

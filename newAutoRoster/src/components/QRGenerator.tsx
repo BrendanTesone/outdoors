@@ -21,6 +21,12 @@ const QRGenerator = () => {
         setQrUrl(url);
     };
 
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter') {
+            generateQRCode();
+        }
+    };
+
     const handleCopyImage = async () => {
         if (!qrUrl) return;
         try {
@@ -36,7 +42,7 @@ const QRGenerator = () => {
 
     return (
         <Box sx={{ p: 3, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
-            <Typography variant="h5" gutterBottom sx={{ fontWeight: 'medium' }}>
+            <Typography variant="h4" sx={{ fontWeight: 800, color: 'primary.main', mb: 3 }}>
                 QR Code Generator
             </Typography>
             <Paper elevation={3} sx={{ p: 4, width: '100%', maxWidth: 450, borderRadius: 3 }}>
@@ -48,6 +54,7 @@ const QRGenerator = () => {
                     onChange={handleTextChange}
                     onClick={handleInputInteraction}
                     onTouchStart={handleInputInteraction}
+                    onKeyDown={handleKeyDown}
                     placeholder="Paste a link or type something..."
                     sx={{ mb: 3 }}
                 />

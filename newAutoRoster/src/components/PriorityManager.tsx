@@ -109,7 +109,7 @@ const PriorityManager = () => {
     return (
         <Box sx={{ p: 4, display: 'flex', flexDirection: 'column', gap: 4 }}>
             <Stack direction="row" justifyContent="space-between" alignItems="center">
-                <Typography variant="h5" sx={{ fontWeight: 600 }}>
+                <Typography variant="h4" sx={{ fontWeight: 800, color: 'primary.main' }}>
                     Priority Manager
                 </Typography>
                 <Stack direction="row" spacing={2}>

@@ -186,7 +186,7 @@ const SetRosterPriority = () => {
 
     return (
         <Box sx={{ p: 4, display: 'flex', flexDirection: 'column', gap: 4 }}>
-            <Typography variant="h4" sx={{ fontWeight: 800, color: 'primary.main', letterSpacing: '-0.02em' }}>
+            <Typography variant="h4" sx={{ fontWeight: 800, color: 'primary.main', textAlign: 'center' }}>
                 Set Roster Priorities
             </Typography>
 

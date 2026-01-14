@@ -117,7 +117,7 @@ const AddCloseDate = () => {
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             <Box sx={{ p: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <Typography variant="h5" gutterBottom sx={{ fontWeight: 600, mb: 3 }}>
+                <Typography variant="h4" sx={{ fontWeight: 800, color: 'primary.main', mb: 3 }}>
                     Schedule Form Close Date
                 </Typography>
 

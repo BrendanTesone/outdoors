@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { HashRouter as Router, Routes, Route, Link, useLocation, Navigate } from 'react-router-dom'
+import { HashRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom'
 import {
   Box, Container, Typography, CssBaseline, ThemeProvider, createTheme,
   Drawer, ListItemButton, ListItemIcon, ListItemText, ListSubheader, Divider
@@ -13,6 +13,7 @@ import MailIcon from '@mui/icons-material/Mail';
 import StarIcon from '@mui/icons-material/Star';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import SendIcon from '@mui/icons-material/Send';
+import MapIcon from '@mui/icons-material/Map';
 
 import QRGenerator from './components/QRGenerator'
 import AddCloseDate from './components/AddCloseDate'
@@ -23,6 +24,8 @@ import PriorityManager from './components/PriorityManager'
 import AutoRoster from './components/AutoRoster'
 import DraftTripEmail from './components/DraftTripEmail'
 import SetRosterPriority from './components/SetRosterPriority'
+import ItineraryGenerator from './components/ItineraryGenerator'
+import DashboardHome from './components/DashboardHome'
 import outdoorsLogo from './assets/Outdoors Tree Logo.png'
 import './App.css'
 
@@ -31,7 +34,7 @@ const DRAWER_WIDTH = 280;
 function AppContent() {
   const location = useLocation();
 
-  const MenuItem = ({ to, icon, label }: { to: string, icon: React.ReactNode, label: string }) => {
+  const MenuItem = ({ to, icon, label, beta }: { to: string, icon: React.ReactNode, label: string, beta?: boolean }) => {
     const active = location.pathname === to;
     return (
       <ListItemButton
@@ -53,7 +56,29 @@ function AppContent() {
         selected={active}
       >
         <ListItemIcon>{icon}</ListItemIcon>
-        <ListItemText primary={label} primaryTypographyProps={{ fontWeight: active ? 700 : 500, fontSize: '0.9rem' }} />
+        <ListItemText
+          primary={
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              {label}
+              {beta && (
+                <Typography
+                  sx={{
+                    fontSize: '0.6rem',
+                    bgcolor: 'rgba(0,0,0,0.05)',
+                    px: 0.5,
+                    borderRadius: 0.5,
+                    fontWeight: 700,
+                    color: 'text.secondary',
+                    letterSpacing: '0.05em'
+                  }}
+                >
+                  BETA
+                </Typography>
+              )}
+            </Box>
+          }
+          primaryTypographyProps={{ fontWeight: active ? 700 : 500, fontSize: '0.9rem' }}
+        />
       </ListItemButton>
     );
   };
@@ -73,7 +98,22 @@ function AppContent() {
           [`& .MuiDrawer-paper`]: { width: DRAWER_WIDTH, boxSizing: 'border-box', borderRight: '1px solid #e0e6e4', bgcolor: '#ffffff' },
         }}
       >
-        <Box sx={{ p: 1.5, borderBottom: '1px solid #e0e6e4', display: 'flex', alignItems: 'center', gap: 1.5 }}>
+        <Box
+          component={Link}
+          to="/"
+          sx={{
+            p: 1.5,
+            borderBottom: '1px solid #e0e6e4',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1.5,
+            textDecoration: 'none',
+            color: 'inherit',
+            cursor: 'pointer',
+            transition: 'bgcolor 0.2s',
+            '&:hover': { bgcolor: '#f9f9f9' }
+          }}
+        >
           <img src={outdoorsLogo} alt="Logo" style={{ height: 60, width: 'auto' }} />
           <Typography variant="h6" sx={{ fontWeight: 800, color: 'primary.main', fontSize: '1.2rem', whiteSpace: 'nowrap' }}>
             Eboard Tools
@@ -90,7 +130,7 @@ function AppContent() {
 
           <Divider sx={{ my: 2, mx: 2 }} />
 
-          <ListSubheader sx={{ fontWeight: 800, textTransform: 'uppercase', fontSize: '0.75rem', color: 'text.secondary', lineHeight: '2em' }}>
+          <ListSubheader disableSticky sx={{ fontWeight: 800, textTransform: 'uppercase', fontSize: '0.75rem', color: 'text.secondary', lineHeight: '2em' }}>
             Phase 2: Roster Management
           </ListSubheader>
           <MenuItem to="/auto-roster" icon={<GroupIcon />} label="Auto Roster" />
@@ -98,7 +138,7 @@ function AppContent() {
 
           <Divider sx={{ my: 2, mx: 2 }} />
 
-          <ListSubheader sx={{ fontWeight: 800, textTransform: 'uppercase', fontSize: '0.75rem', color: 'text.secondary', lineHeight: '2em' }}>
+          <ListSubheader disableSticky sx={{ fontWeight: 800, textTransform: 'uppercase', fontSize: '0.75rem', color: 'text.secondary', lineHeight: '2em' }}>
             Phase 3: Communication
           </ListSubheader>
           <MenuItem to="/draft-email" icon={<MailIcon />} label="Draft Trip Emails" />
@@ -106,7 +146,14 @@ function AppContent() {
 
           <Divider sx={{ my: 2, mx: 2 }} />
 
-          <ListSubheader sx={{ fontWeight: 800, textTransform: 'uppercase', fontSize: '0.75rem', color: 'text.secondary', lineHeight: '2em' }}>
+          <ListSubheader disableSticky sx={{ fontWeight: 800, textTransform: 'uppercase', fontSize: '0.75rem', color: 'text.secondary', lineHeight: '2em' }}>
+            Experimental
+          </ListSubheader>
+          <MenuItem to="/itinerary" icon={<MapIcon />} label="Itinerary Generator" beta />
+
+          <Divider sx={{ my: 2, mx: 2 }} />
+
+          <ListSubheader disableSticky sx={{ fontWeight: 800, textTransform: 'uppercase', fontSize: '0.75rem', color: 'text.secondary', lineHeight: '2em' }}>
             Admin & Database
           </ListSubheader>
           <MenuItem to="/priority" icon={<StarIcon />} label="Priority Database" />
@@ -120,7 +167,7 @@ function AppContent() {
 
         <Container maxWidth="lg">
           <Routes>
-            <Route path="/" element={<Navigate to="/qr" replace />} />
+            <Route path="/" element={<DashboardHome />} />
             <Route path="/qr" element={<QRGenerator />} />
             <Route path="/auto-form" element={<AutoFormGenerator />} />
             <Route path="/add-date" element={<AddCloseDate />} />
@@ -130,6 +177,7 @@ function AppContent() {
             <Route path="/auto-roster" element={<AutoRoster />} />
             <Route path="/draft-email" element={<DraftTripEmail />} />
             <Route path="/set-priority" element={<SetRosterPriority />} />
+            <Route path="/itinerary" element={<ItineraryGenerator />} />
           </Routes>
         </Container>
       </Box>

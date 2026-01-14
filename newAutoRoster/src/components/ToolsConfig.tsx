@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Box, TextField, Button, Typography, Paper, Alert, Stack, Divider } from '@mui/material';
+import { Box, TextField, Button, Typography, Paper, Alert, Stack, Divider, CircularProgress } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import FolderIcon from '@mui/icons-material/Folder';
 import DescriptionIcon from '@mui/icons-material/Description';
@@ -139,8 +139,9 @@ const ToolsConfig = () => {
                     variant="contained"
                     onClick={() => handleSaveConfig(settingKey, inputVal, successMsg)}
                     disabled={loading || !inputVal}
+                    startIcon={loading && <CircularProgress size={20} color="inherit" />}
                 >
-                    Update {title.split(' ')[0]}
+                    {loading ? 'Updating...' : `Update ${title.split(' ')[0]}`}
                 </Button>
             </Stack>
         </Paper>
@@ -150,7 +151,7 @@ const ToolsConfig = () => {
         <Box sx={{ p: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
             <Stack direction="row" spacing={2} alignItems="center">
                 <SettingsIcon color="primary" sx={{ fontSize: 32 }} />
-                <Typography variant="h5" sx={{ fontWeight: 800 }}>
+                <Typography variant="h4" sx={{ fontWeight: 800, color: 'primary.main' }}>
                     Global Parameters
                 </Typography>
             </Stack>

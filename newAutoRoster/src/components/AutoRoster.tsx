@@ -145,17 +145,25 @@ const AutoRoster = () => {
                 if (action === 'getCommitmentData') {
                     setOriginalCommitment(data.people);
 
-                    // Deduplicate: Remove those already in roster
+                    // Deduplicate: Remove those already in roster AND those in Eboard
                     const rosterEmails = new Set(rosterPeople?.map(p => p.email) || []);
-                    const filtered = (data.people || []).filter((p: any) => !rosterEmails.has(p.email));
+                    const eboardEmails = new Set(eboardPeople?.map(p => p.email) || []);
+
+                    const filtered = (data.people || []).filter((p: any) =>
+                        !rosterEmails.has(p.email) && !eboardEmails.has(p.email)
+                    );
                     setCommitmentPeople(sortPeople(filtered));
                 } else {
                     setRosterPeople(sortPeople(data.people || []));
 
-                    // Deduplicate Commitment: Remove those now in roster
+                    // Deduplicate Others: Remove those now in roster from Commitment and Eboard
+                    const newRosterEmails = new Set(data.people?.map((p: any) => p.email) || []);
+
                     if (commitmentPeople) {
-                        const newRosterEmails = new Set(data.people?.map((p: any) => p.email) || []);
                         setCommitmentPeople(prev => prev ? prev.filter(p => !newRosterEmails.has(p.email)) : null);
+                    }
+                    if (eboardPeople) {
+                        setEboardPeople(prev => prev ? prev.filter(p => !newRosterEmails.has(p.email)) : null);
                     }
                 }
             } else {
@@ -338,9 +346,13 @@ const AutoRoster = () => {
             });
             const data = await response.json();
             if (data.success) {
-                setEboardPeople(data.members);
                 setOriginalEboard(data.members);
                 setEboardUrl(data.url);
+
+                // Deduplicate: Remove those already in roster
+                const rosterEmails = new Set(rosterPeople?.map(p => p.email) || []);
+                const filtered = (data.members || []).filter((p: any) => !rosterEmails.has(p.email));
+                setEboardPeople(filtered);
             } else {
                 setError(data.error || 'Failed to fetch eboard');
             }
@@ -612,11 +624,7 @@ const AutoRoster = () => {
 
     return (
         <Box sx={{ p: 4, display: 'flex', flexDirection: 'column', gap: 4 }}>
-            <Typography variant="h4" sx={{
-                fontWeight: 800,
-                color: 'primary.main',
-                letterSpacing: '-0.02em'
-            }}>
+            <Typography variant="h4" sx={{ fontWeight: 800, color: 'primary.main', textAlign: 'center' }}>
                 Auto Roster
             </Typography>
 
