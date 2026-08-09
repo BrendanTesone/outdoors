@@ -3,7 +3,7 @@ import {
     Box, Typography, Paper, Alert, CircularProgress,
     Stack, IconButton, Table, TableBody, TableCell,
     TableContainer, TableHead, TableRow, TextField,
-    InputAdornment, Button, Tooltip
+    InputAdornment, Button, Tooltip, Chip
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -15,6 +15,7 @@ interface Person {
     email: string;
     name: string;
     priority: number;
+    gender: string | null;
 }
 
 const PriorityManager = () => {
@@ -110,7 +111,7 @@ const PriorityManager = () => {
         <Box sx={{ p: 4, display: 'flex', flexDirection: 'column', gap: 4 }}>
             <Stack direction="row" justifyContent="space-between" alignItems="center">
                 <Typography variant="h4" sx={{ fontWeight: 800, color: 'primary.main' }}>
-                    Priority Manager
+                    Priority Database
                 </Typography>
                 <Stack direction="row" spacing={2}>
                     {sheetId && (
@@ -167,6 +168,7 @@ const PriorityManager = () => {
                             <TableRow>
                                 <TableCell sx={{ fontWeight: 700 }}>Name</TableCell>
                                 <TableCell sx={{ fontWeight: 700 }}>Email</TableCell>
+                                <TableCell align="center" sx={{ fontWeight: 700 }}>Gender</TableCell>
                                 <TableCell align="center" sx={{ fontWeight: 700 }}>Priority Score</TableCell>
                                 <TableCell align="right" sx={{ fontWeight: 700 }}>Actions</TableCell>
                             </TableRow>
@@ -174,13 +176,13 @@ const PriorityManager = () => {
                         <TableBody>
                             {loading && finalDisplayList.length === 0 ? (
                                 <TableRow>
-                                    <TableCell colSpan={4} align="center" sx={{ py: 8 }}>
+                                    <TableCell colSpan={5} align="center" sx={{ py: 8 }}>
                                         <CircularProgress size={40} />
                                     </TableCell>
                                 </TableRow>
                             ) : finalDisplayList.length === 0 ? (
                                 <TableRow>
-                                    <TableCell colSpan={4} align="center" sx={{ py: 8, color: 'text.secondary' }}>
+                                    <TableCell colSpan={5} align="center" sx={{ py: 8, color: 'text.secondary' }}>
                                         No people found.
                                     </TableCell>
                                 </TableRow>
@@ -189,6 +191,20 @@ const PriorityManager = () => {
                                     <TableRow key={person.email} hover>
                                         <TableCell>{person.name || '—'}</TableCell>
                                         <TableCell sx={{ color: 'text.secondary' }}>{person.email}</TableCell>
+                                        <TableCell align="center">
+                                            {(() => {
+                                                const g = person.gender?.toLowerCase();
+                                                if (!g || g === 'null' || g === '') {
+                                                    return <Chip label="Unknown" size="small" sx={{ bgcolor: '#f1f3f4', color: '#5f6368', fontWeight: 600, fontSize: '0.7rem' }} />;
+                                                } else if (g === 'male') {
+                                                    return <Chip label="Male" size="small" sx={{ bgcolor: '#e3f2fd', color: '#1565c0', fontWeight: 700, fontSize: '0.7rem' }} />;
+                                                } else if (g === 'female') {
+                                                    return <Chip label="Female" size="small" sx={{ bgcolor: '#fce4ec', color: '#880e4f', fontWeight: 700, fontSize: '0.7rem' }} />;
+                                                } else {
+                                                    return <Chip label={person.gender!} size="small" sx={{ fontWeight: 600, fontSize: '0.7rem' }} />;
+                                                }
+                                            })()}
+                                        </TableCell>
                                         <TableCell align="center">
                                             <Box sx={{
                                                 display: 'inline-block',

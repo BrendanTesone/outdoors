@@ -27,6 +27,8 @@ function doPost(e) {
                 return outputJsonResponse(adjustPriority(contents));
             case 'getCommitmentData':
                 return outputJsonResponse(getCommitmentDataFromLink(contents));
+            case 'getCommitmentDataWithGender':
+                return outputJsonResponse(getCommitmentDataWithGender(contents));
             case 'getRosterData':
                 return outputJsonResponse(getRosterDataFromLink(contents));
             case 'createRosterFromTemplate':
@@ -45,6 +47,8 @@ function doPost(e) {
                 return outputJsonResponse(createEmailDraft(contents));
             case 'batchAdjustPriority':
                 return outputJsonResponse(batchAdjustPriority(contents));
+            case 'updateGender':
+                return outputJsonResponse(updateGenderForPeople(contents));
             case 'testResolveLocation':
                 return outputJsonResponse(testResolveLocation(contents));
             case 'testExtractStops':

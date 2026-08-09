@@ -34,6 +34,10 @@ function createCommitmentForm(payload) {
         .setTitle("Is your B-Engaged form filled out?")
         .setChoiceValues(["Yes", "No", "Pending..."])
         .setRequired(true);
+    form.addMultipleChoiceItem()
+        .setTitle("Would this be your first trip with the outdoors club?")
+        .setChoiceValues(["Yes", "No"])
+        .setRequired(true);
 
     // 3. Move Form to Folder
     const props = PropertiesService.getScriptProperties();

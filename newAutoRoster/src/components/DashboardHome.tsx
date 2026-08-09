@@ -78,21 +78,13 @@ const DashboardHome = () => {
             </Box>
 
             <Stack spacing={6}>
-                {/* Phase 1 */}
+                {/* Trip Preparation */}
                 <Box>
                     <Typography variant="overline" sx={{ fontWeight: 800, color: 'text.secondary', letterSpacing: '0.1em', mb: 3, display: 'block' }}>
-                        Phase 1: Trip Preparation
+                        Trip Preparation
                     </Typography>
                     <Grid container spacing={3}>
-                        <Grid size={{ xs: 12, sm: 4 }}>
-                            <ToolCard
-                                to="/qr"
-                                icon={<QrCodeIcon fontSize="large" />}
-                                title="QR Code Generator"
-                                description="Instantly generate QR codes for signup forms and links."
-                            />
-                        </Grid>
-                        <Grid size={{ xs: 12, sm: 4 }}>
+                        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                             <ToolCard
                                 to="/auto-form"
                                 icon={<DescriptionIcon fontSize="large" />}
@@ -100,7 +92,15 @@ const DashboardHome = () => {
                                 description="Creates, fills out, publishes and sets an end date for a commitment form from a template."
                             />
                         </Grid>
-                        <Grid size={{ xs: 12, sm: 4 }}>
+                        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                            <ToolCard
+                                to="/qr"
+                                icon={<QrCodeIcon fontSize="large" />}
+                                title="QR Code Generator"
+                                description="Instantly generate QR codes for signup forms and links."
+                            />
+                        </Grid>
+                        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                             <ToolCard
                                 to="/add-date"
                                 icon={<EventIcon fontSize="large" />}
@@ -108,47 +108,62 @@ const DashboardHome = () => {
                                 description="Set a time for commitment forms to close to prevent late submissions."
                             />
                         </Grid>
-                        <Grid size={{ xs: 12, sm: 4 }}>
+                        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                             <ToolCard
                                 to="/itinerary"
                                 icon={<MapIcon fontSize="large" />}
                                 title="Itinerary Generator"
-                                badge="BETA"
-                                description="Generate emergency plans and directions. Link must start/end at Binghamton with all stops included."
+                                description="Generate emergency plans and directions from multi-stop Google Maps links."
                             />
                         </Grid>
                     </Grid>
                 </Box>
 
-                {/* Phase 2 */}
+                {/* Roster & Priority Management */}
                 <Box>
                     <Typography variant="overline" sx={{ fontWeight: 800, color: 'text.secondary', letterSpacing: '0.1em', mb: 3, display: 'block' }}>
-                        Phase 2: Roster Management
+                        Roster & Priority Management
                     </Typography>
                     <Grid container spacing={3}>
-                        <Grid size={{ xs: 12, sm: 6 }}>
+                        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                             <ToolCard
-                                to="/auto-roster"
+                                to="/auto-roster-2"
                                 icon={<GroupIcon fontSize="large" />}
                                 title="Auto Roster"
-                                description="Allows you to automatically roster members based on priority points, giving complete manual control if needed."
+                                description="Fully automated roster creation with gender balancing and priority point ranking."
                             />
                         </Grid>
-                        <Grid size={{ xs: 12, sm: 6 }}>
+                        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                             <ToolCard
-                                to="/set-priority"
+                                to="/new-set-priority"
                                 icon={<TrendingUpIcon fontSize="large" />}
-                                title="Set Trip Priority"
-                                description='Review and adjust member priority points based on their attendance to a particular trip.'
+                                title="Set Priority for Trip"
+                                description="Process commitment form links with automatic backend gender resolution and update trip priorities."
+                            />
+                        </Grid>
+                        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                            <ToolCard
+                                to="/increase-decrease-priority"
+                                icon={<TrendingUpIcon fontSize="large" />}
+                                title="Increase/Decrease Priority"
+                                description="Manually adjust priority points for individual club members in the database."
+                            />
+                        </Grid>
+                        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                            <ToolCard
+                                to="/priority"
+                                icon={<StarIcon fontSize="large" />}
+                                title="Priority Database"
+                                description="View and manage the priority standings for all club members."
                             />
                         </Grid>
                     </Grid>
                 </Box>
 
-                {/* Phase 3 */}
+                {/* Communications */}
                 <Box>
                     <Typography variant="overline" sx={{ fontWeight: 800, color: 'text.secondary', letterSpacing: '0.1em', mb: 3, display: 'block' }}>
-                        Phase 3: Communication
+                        Communications
                     </Typography>
                     <Grid container spacing={3}>
                         <Grid size={{ xs: 12, sm: 6 }}>
@@ -170,21 +185,13 @@ const DashboardHome = () => {
                     </Grid>
                 </Box>
 
-                {/* Admin */}
+                {/* System Settings */}
                 <Box>
                     <Typography variant="overline" sx={{ fontWeight: 800, color: 'text.secondary', letterSpacing: '0.1em', mb: 3, display: 'block' }}>
-                        Admin & Database
+                        System Settings
                     </Typography>
                     <Grid container spacing={3}>
-                        <Grid size={{ xs: 12, sm: 6 }}>
-                            <ToolCard
-                                to="/priority"
-                                icon={<StarIcon fontSize="large" />}
-                                title="Priority Database"
-                                description="View and manage the priority standings for all club members."
-                            />
-                        </Grid>
-                        <Grid size={{ xs: 12, sm: 6 }}>
+                        <Grid size={{ xs: 12, sm: 12 }}>
                             <ToolCard
                                 to="/config"
                                 icon={<SettingsIcon fontSize="large" />}

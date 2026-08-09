@@ -110,15 +110,14 @@ const ItineraryGenerator = () => {
     return (
         <Box sx={{ p: 4, maxWidth: 1000, mx: 'auto' }}>
             <Typography variant="h4" sx={{ fontWeight: 800, color: 'primary.main', mb: 2, textAlign: 'center' }}>
-                Itinerary Generator <span style={{ color: '#666', fontSize: '1.2rem', verticalAlign: 'middle' }}>(Beta)</span>
+                Itinerary Generator
             </Typography>
 
             <Alert severity="info" sx={{ mb: 4, borderRadius: 2 }}>
                 <Typography variant="body2" fontWeight="bold" gutterBottom>Instructions:</Typography>
                 <Typography variant="body2">
                     1. Go to <b>Google Maps</b> and create a multi-stop itinerary.<br />
-                    2. The trip <b>MUST</b> start and end at <b>Binghamton University</b> (e.g. Binghamton &rarr; Stop A &rarr; Stop B &rarr; Binghamton).<br />
-                    3. Copy the full browser URL and paste it into the field below.
+                    2. Copy the full browser URL and paste it into the field below.
                 </Typography>
             </Alert>
 

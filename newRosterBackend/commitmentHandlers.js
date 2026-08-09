@@ -22,6 +22,10 @@ function getCommitmentDataFromLink(payload) {
         const driveIdx = findColumnByHeader(headers, ["DRIVE", "CAR"]);
         const timestampIdx = 0;
 
+        // Optional First Trip column: looks for phrase containing BOTH 'first' AND 'trip'/'trips'
+        const firstTripTagRegex = /(?=.*first)(?=.*trips?)/i;
+        const firstTripIdx = headers.findIndex(h => firstTripTagRegex.test(String(h)));
+
         if (emailIdx === -1) throw new Error("Could not find Email column.");
 
         // Fetch eboard members for lookup
@@ -51,6 +55,13 @@ function getCommitmentDataFromLink(payload) {
             const isDriver = driverVal.startsWith("y") || driverVal === "yes" || driverVal === "true";
             const isEboard = eboardEmails.has(email);
 
+            // Optional First Trip value check
+            let isFirstTrip = null;
+            if (firstTripIdx !== -1) {
+                const rawTripVal = String(row[firstTripIdx]).trim().toLowerCase();
+                isFirstTrip = rawTripVal.startsWith("y") || rawTripVal === "true";
+            }
+
             // Priority Logic
             const priority = isEboard ? null : (priorityMap.get(email) ?? 0);
 
@@ -58,6 +69,7 @@ function getCommitmentDataFromLink(payload) {
                 name: name,
                 email: email,
                 isDriver: isDriver,
+                isFirstTrip: isFirstTrip,
                 submissionDateAndTime: row[timestampIdx] instanceof Date ? row[timestampIdx].toISOString() : row[timestampIdx],
                 priority: priority,
                 isEboard: isEboard,
@@ -69,3 +81,46 @@ function getCommitmentDataFromLink(payload) {
         return { success: false, error: err.message };
     }
 }
+
+/**
+ * API Function: Wrapper around getCommitmentDataFromLink that automatically
+ * batch-resolves gender for unknown members, updates the Priority sheet, and attaches gender.
+ */
+function getCommitmentDataWithGender(payload) {
+    // 1. Call original function
+    const result = getCommitmentDataFromLink(payload);
+    if (!result.success || !result.people || result.people.length === 0) {
+        return result;
+    }
+
+    try {
+        // 2. Resolve missing genders in batch & update Priority Sheet
+        updateGenderForPeople({ people: result.people });
+
+        // 3. Read back updated priority & gender data from Priority Sheet
+        const priorityResult = getPriorityData();
+        const genderMap = new Map();
+        if (priorityResult.success) {
+            priorityResult.people.forEach(p => {
+                if (p.email && p.gender) {
+                    genderMap.set(String(p.email).trim().toLowerCase(), String(p.gender).toLowerCase());
+                }
+            });
+        }
+
+        // 4. Attach gender to each person in commitment list
+        const enrichedPeople = result.people.map(p => ({
+            ...p,
+            gender: genderMap.get(String(p.email).trim().toLowerCase()) || null,
+        }));
+
+        return {
+            ...result,
+            people: enrichedPeople
+        };
+    } catch (err) {
+        // If gender resolution fails, return original result gracefully
+        return result;
+    }
+}
+

@@ -1,3 +1,5 @@
+docker run --rm -it -p 5173:5173 -v ${PWD}:/app -w /app node:lts bash
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.

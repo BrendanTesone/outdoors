@@ -22,8 +22,11 @@ import AutoFormGenerator from './components/AutoFormGenerator'
 import ToolsConfig from './components/ToolsConfig'
 import PriorityManager from './components/PriorityManager'
 import AutoRoster from './components/AutoRoster'
+import AutoRoster2 from './components/AutoRoster2'
 import DraftTripEmail from './components/DraftTripEmail'
 import SetRosterPriority from './components/SetRosterPriority'
+import NewSetRosterPriority from './components/NewSetRosterPriority'
+import IncreaseDecreasePriority from './components/IncreaseDecreasePriority'
 import ItineraryGenerator from './components/ItineraryGenerator'
 import DashboardHome from './components/DashboardHome'
 import outdoorsLogo from './assets/Outdoors Tree Logo.png'
@@ -122,24 +125,27 @@ function AppContent() {
         <Box sx={{ overflow: 'auto', py: 2 }}>
 
           <ListSubheader disableSticky sx={{ fontWeight: 800, textTransform: 'uppercase', fontSize: '0.75rem', color: 'text.secondary', lineHeight: '2em' }}>
-            Phase 1: Trip Prep
+            Trip Preparation
           </ListSubheader>
-          <MenuItem to="/qr" icon={<QrCodeIcon />} label="QR Generator" />
           <MenuItem to="/auto-form" icon={<DescriptionIcon />} label="Commitment Form" />
+          <MenuItem to="/qr" icon={<QrCodeIcon />} label="QR Generator" />
           <MenuItem to="/add-date" icon={<EventIcon />} label="Set Close Date" />
+          <MenuItem to="/itinerary" icon={<MapIcon />} label="Itinerary Generator" />
 
           <Divider sx={{ my: 2, mx: 2 }} />
 
           <ListSubheader disableSticky sx={{ fontWeight: 800, textTransform: 'uppercase', fontSize: '0.75rem', color: 'text.secondary', lineHeight: '2em' }}>
-            Phase 2: Roster Management
+            Roster & Priority Management
           </ListSubheader>
-          <MenuItem to="/auto-roster" icon={<GroupIcon />} label="Auto Roster" />
-          <MenuItem to="/set-priority" icon={<TrendingUpIcon />} label="Set Trip Priority" />
+          <MenuItem to="/auto-roster-2" icon={<GroupIcon />} label="Auto Roster" />
+          <MenuItem to="/new-set-priority" icon={<TrendingUpIcon />} label="Set Priority for Trip" />
+          <MenuItem to="/increase-decrease-priority" icon={<TrendingUpIcon />} label="Increase/Decrease Priority" />
+          <MenuItem to="/priority" icon={<StarIcon />} label="Priority Database" />
 
           <Divider sx={{ my: 2, mx: 2 }} />
 
           <ListSubheader disableSticky sx={{ fontWeight: 800, textTransform: 'uppercase', fontSize: '0.75rem', color: 'text.secondary', lineHeight: '2em' }}>
-            Phase 3: Communication
+            Communications
           </ListSubheader>
           <MenuItem to="/draft-email" icon={<MailIcon />} label="Draft Trip Emails" />
           <MenuItem to="/auto-email" icon={<SendIcon />} label="Email Slideshow Bot" />
@@ -147,16 +153,8 @@ function AppContent() {
           <Divider sx={{ my: 2, mx: 2 }} />
 
           <ListSubheader disableSticky sx={{ fontWeight: 800, textTransform: 'uppercase', fontSize: '0.75rem', color: 'text.secondary', lineHeight: '2em' }}>
-            Experimental
+            System Settings
           </ListSubheader>
-          <MenuItem to="/itinerary" icon={<MapIcon />} label="Itinerary Generator" beta />
-
-          <Divider sx={{ my: 2, mx: 2 }} />
-
-          <ListSubheader disableSticky sx={{ fontWeight: 800, textTransform: 'uppercase', fontSize: '0.75rem', color: 'text.secondary', lineHeight: '2em' }}>
-            Admin & Database
-          </ListSubheader>
-          <MenuItem to="/priority" icon={<StarIcon />} label="Priority Database" />
           <MenuItem to="/config" icon={<SettingsIcon />} label="Global Config" />
 
         </Box>
@@ -173,10 +171,13 @@ function AppContent() {
             <Route path="/add-date" element={<AddCloseDate />} />
             <Route path="/auto-email" element={<AutoEmailSettings />} />
             <Route path="/priority" element={<PriorityManager />} />
+            <Route path="/increase-decrease-priority" element={<IncreaseDecreasePriority />} />
             <Route path="/config" element={<ToolsConfig />} />
             <Route path="/auto-roster" element={<AutoRoster />} />
+            <Route path="/auto-roster-2" element={<AutoRoster2 />} />
             <Route path="/draft-email" element={<DraftTripEmail />} />
             <Route path="/set-priority" element={<SetRosterPriority />} />
+            <Route path="/new-set-priority" element={<NewSetRosterPriority />} />
             <Route path="/itinerary" element={<ItineraryGenerator />} />
           </Routes>
         </Container>

@@ -156,6 +156,10 @@ const AutoFormGenerator = () => {
                                 onChange={(e) => setReturnTime(e.target.value)}
                             />
 
+                            <Typography variant="caption" color="text.secondary" component="div" sx={{ p: 1.5, bgcolor: '#fafafa', borderRadius: 2, border: '1px solid #eee' }}>
+                                <b>Automatically Included Form Questions:</b> Name, Bmail, Driver & Car Status, B-Engaged Waiver Status, and First Trip Status.
+                            </Typography>
+
                             {status && <Alert severity={status.type}>{status.message}</Alert>}
 
                             <Button
