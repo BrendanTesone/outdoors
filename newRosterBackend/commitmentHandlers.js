@@ -48,7 +48,7 @@ function getCommitmentDataFromLink(payload) {
             const driverVal = driveIdx !== -1 ? String(row[driveIdx]).trim().toLowerCase() : "";
 
             // All items (Name, Email, Driver) are required
-            if (!name || !email || !email.includes("@binghamton.edu") || !driverVal) {
+            if (!name || !email || !driverVal) {
                 return null;
             }
 
