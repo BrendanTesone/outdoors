@@ -9,6 +9,8 @@ import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import SendIcon from '@mui/icons-material/Send';
 import SettingsIcon from '@mui/icons-material/Settings';
 import MapIcon from '@mui/icons-material/Map';
+import LocalGasStationIcon from '@mui/icons-material/LocalGasStation';
+import ListAltIcon from '@mui/icons-material/ListAlt';
 import { useNavigate } from 'react-router-dom';
 
 const ToolCard = ({ icon, title, description, to, badge }: { icon: React.ReactNode, title: string, description: string, to: string, badge?: string }) => {
@@ -116,6 +118,14 @@ const DashboardHome = () => {
                                 description="Generate emergency plans and directions from multi-stop Google Maps links."
                             />
                         </Grid>
+                        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                            <ToolCard
+                                to="/gas-forms"
+                                icon={<LocalGasStationIcon fontSize="large" />}
+                                title="Gas Reimbursement"
+                                description="Calculate route mileage from Google Maps links and save a filled reimbursement form with itinerary."
+                            />
+                        </Grid>
                     </Grid>
                 </Box>
 
@@ -135,10 +145,10 @@ const DashboardHome = () => {
                         </Grid>
                         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                             <ToolCard
-                                to="/new-set-priority"
-                                icon={<TrendingUpIcon fontSize="large" />}
-                                title="Set Priority for Trip"
-                                description="Process commitment form links with automatic backend gender resolution and update trip priorities."
+                                to="/email-priority"
+                                icon={<ListAltIcon fontSize="large" />}
+                                title="Email Priority Lookup"
+                                description="Paste a list of emails and copy a two-column list of email and priority number."
                             />
                         </Grid>
                         <Grid size={{ xs: 12, sm: 6, md: 3 }}>

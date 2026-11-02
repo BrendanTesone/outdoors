@@ -14,6 +14,8 @@ import StarIcon from '@mui/icons-material/Star';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import SendIcon from '@mui/icons-material/Send';
 import MapIcon from '@mui/icons-material/Map';
+import LocalGasStationIcon from '@mui/icons-material/LocalGasStation';
+import ListAltIcon from '@mui/icons-material/ListAlt';
 
 import QRGenerator from './components/QRGenerator'
 import AddCloseDate from './components/AddCloseDate'
@@ -28,6 +30,8 @@ import SetRosterPriority from './components/SetRosterPriority'
 import NewSetRosterPriority from './components/NewSetRosterPriority'
 import IncreaseDecreasePriority from './components/IncreaseDecreasePriority'
 import ItineraryGenerator from './components/ItineraryGenerator'
+import GasForms from './components/GasForms'
+import EmailPriorityLookup from './components/EmailPriorityLookup'
 import DashboardHome from './components/DashboardHome'
 import outdoorsLogo from './assets/Outdoors Tree Logo.png'
 import './App.css'
@@ -131,6 +135,7 @@ function AppContent() {
           <MenuItem to="/qr" icon={<QrCodeIcon />} label="QR Generator" />
           <MenuItem to="/add-date" icon={<EventIcon />} label="Set Close Date" />
           <MenuItem to="/itinerary" icon={<MapIcon />} label="Itinerary Generator" />
+          <MenuItem to="/gas-forms" icon={<LocalGasStationIcon />} label="Gas Reimbursement" />
 
           <Divider sx={{ my: 2, mx: 2 }} />
 
@@ -138,7 +143,7 @@ function AppContent() {
             Roster & Priority Management
           </ListSubheader>
           <MenuItem to="/auto-roster-2" icon={<GroupIcon />} label="Auto Roster" />
-          <MenuItem to="/new-set-priority" icon={<TrendingUpIcon />} label="Set Priority for Trip" />
+          <MenuItem to="/email-priority" icon={<ListAltIcon />} label="Email Priority Lookup" />
           <MenuItem to="/increase-decrease-priority" icon={<TrendingUpIcon />} label="Increase/Decrease Priority" />
           <MenuItem to="/priority" icon={<StarIcon />} label="Priority Database" />
 
@@ -179,6 +184,8 @@ function AppContent() {
             <Route path="/set-priority" element={<SetRosterPriority />} />
             <Route path="/new-set-priority" element={<NewSetRosterPriority />} />
             <Route path="/itinerary" element={<ItineraryGenerator />} />
+            <Route path="/gas-forms" element={<GasForms />} />
+            <Route path="/email-priority" element={<EmailPriorityLookup />} />
           </Routes>
         </Container>
       </Box>
