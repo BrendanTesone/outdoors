@@ -2,15 +2,12 @@ import { Grid, Paper, Typography, Box, Stack } from '@mui/material';
 import QrCodeIcon from '@mui/icons-material/QrCode';
 import DescriptionIcon from '@mui/icons-material/Description';
 import EventIcon from '@mui/icons-material/Event';
-import GroupIcon from '@mui/icons-material/Group';
 import MailIcon from '@mui/icons-material/Mail';
-import StarIcon from '@mui/icons-material/Star';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import SendIcon from '@mui/icons-material/Send';
 import SettingsIcon from '@mui/icons-material/Settings';
 import MapIcon from '@mui/icons-material/Map';
 import LocalGasStationIcon from '@mui/icons-material/LocalGasStation';
-import ListAltIcon from '@mui/icons-material/ListAlt';
+import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
 import { useNavigate } from 'react-router-dom';
 
 const ToolCard = ({ icon, title, description, to, badge }: { icon: React.ReactNode, title: string, description: string, to: string, badge?: string }) => {
@@ -126,45 +123,12 @@ const DashboardHome = () => {
                                 description="Calculate route mileage from Google Maps links and save a filled reimbursement form with itinerary."
                             />
                         </Grid>
-                    </Grid>
-                </Box>
-
-                {/* Roster & Priority Management */}
-                <Box>
-                    <Typography variant="overline" sx={{ fontWeight: 800, color: 'text.secondary', letterSpacing: '0.1em', mb: 3, display: 'block' }}>
-                        Roster & Priority Management
-                    </Typography>
-                    <Grid container spacing={3}>
                         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                             <ToolCard
-                                to="/auto-roster-2"
-                                icon={<GroupIcon fontSize="large" />}
-                                title="Auto Roster"
-                                description="Fully automated roster creation with gender balancing and priority point ranking."
-                            />
-                        </Grid>
-                        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                            <ToolCard
-                                to="/email-priority"
-                                icon={<ListAltIcon fontSize="large" />}
-                                title="Email Priority Lookup"
-                                description="Paste a list of emails and copy a two-column list of email and priority number."
-                            />
-                        </Grid>
-                        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                            <ToolCard
-                                to="/increase-decrease-priority"
-                                icon={<TrendingUpIcon fontSize="large" />}
-                                title="Increase/Decrease Priority"
-                                description="Manually adjust priority points for individual club members in the database."
-                            />
-                        </Grid>
-                        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                            <ToolCard
-                                to="/priority"
-                                icon={<StarIcon fontSize="large" />}
-                                title="Priority Database"
-                                description="View and manage the priority standings for all club members."
+                                to="/bg-remover"
+                                icon={<AutoFixHighIcon fontSize="large" />}
+                                title="Background Remover"
+                                description="Remove backgrounds from photos, flyers, and gear completely offline using a local AI model."
                             />
                         </Grid>
                     </Grid>

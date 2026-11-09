@@ -8,14 +8,11 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import QrCodeIcon from '@mui/icons-material/QrCode';
 import DescriptionIcon from '@mui/icons-material/Description';
 import EventIcon from '@mui/icons-material/Event';
-import GroupIcon from '@mui/icons-material/Group';
 import MailIcon from '@mui/icons-material/Mail';
-import StarIcon from '@mui/icons-material/Star';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import SendIcon from '@mui/icons-material/Send';
 import MapIcon from '@mui/icons-material/Map';
 import LocalGasStationIcon from '@mui/icons-material/LocalGasStation';
-import ListAltIcon from '@mui/icons-material/ListAlt';
+import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
 
 import QRGenerator from './components/QRGenerator'
 import AddCloseDate from './components/AddCloseDate'
@@ -32,6 +29,7 @@ import IncreaseDecreasePriority from './components/IncreaseDecreasePriority'
 import ItineraryGenerator from './components/ItineraryGenerator'
 import GasForms from './components/GasForms'
 import EmailPriorityLookup from './components/EmailPriorityLookup'
+import BackgroundRemover from './components/BackgroundRemover'
 import DashboardHome from './components/DashboardHome'
 import outdoorsLogo from './assets/Outdoors Tree Logo.png'
 import './App.css'
@@ -136,16 +134,7 @@ function AppContent() {
           <MenuItem to="/add-date" icon={<EventIcon />} label="Set Close Date" />
           <MenuItem to="/itinerary" icon={<MapIcon />} label="Itinerary Generator" />
           <MenuItem to="/gas-forms" icon={<LocalGasStationIcon />} label="Gas Reimbursement" />
-
-          <Divider sx={{ my: 2, mx: 2 }} />
-
-          <ListSubheader disableSticky sx={{ fontWeight: 800, textTransform: 'uppercase', fontSize: '0.75rem', color: 'text.secondary', lineHeight: '2em' }}>
-            Roster & Priority Management
-          </ListSubheader>
-          <MenuItem to="/auto-roster-2" icon={<GroupIcon />} label="Auto Roster" />
-          <MenuItem to="/email-priority" icon={<ListAltIcon />} label="Email Priority Lookup" />
-          <MenuItem to="/increase-decrease-priority" icon={<TrendingUpIcon />} label="Increase/Decrease Priority" />
-          <MenuItem to="/priority" icon={<StarIcon />} label="Priority Database" />
+          <MenuItem to="/bg-remover" icon={<AutoFixHighIcon />} label="Background Remover" />
 
           <Divider sx={{ my: 2, mx: 2 }} />
 
@@ -186,6 +175,7 @@ function AppContent() {
             <Route path="/itinerary" element={<ItineraryGenerator />} />
             <Route path="/gas-forms" element={<GasForms />} />
             <Route path="/email-priority" element={<EmailPriorityLookup />} />
+            <Route path="/bg-remover" element={<BackgroundRemover />} />
           </Routes>
         </Container>
       </Box>
